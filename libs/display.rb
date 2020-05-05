@@ -5,7 +5,7 @@ module Display
       #{"Welcome to HANGMAN!".blue_highlight.center(60)}
       #{"-"*50}
 
-      #{"You have seven turns to guess the word!".center(50)}
+      #{"You have #{7-turns} #{turns == 6 ? "try" : "tries"} left to guess the word!".center(50)}
       Each turn you can either guess a letter or guess the whole word!
     HEREDOC
   end
@@ -15,11 +15,11 @@ module Display
   end
 
   def winner
-    puts "\n#{"You guessed the word! Congragulations!".green_highlight}"
+    puts "\n\n#{"You guessed the word! Congragulations!".green_highlight}"
   end
 
   def loser
-    puts "\n#{"Game over for the hangman! You lose!".red_highlight}"
+    puts "\n\n#{"Game over for the hangman! You lose!".red_highlight}"
     puts "The word was #{selected_word.join}"
   end
 
