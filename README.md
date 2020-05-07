@@ -4,7 +4,7 @@
 [View Demo](https://repl.it/@andrewbaldwin44/Hangman)
 
 # Dependecies
-  Ruby 2.6 (or higher)
+Ruby 2.6 (or higher)
  
 
 ## Author
