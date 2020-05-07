@@ -3,7 +3,7 @@
 
 [View Demo](https://repl.it/@andrewbaldwin44/Hangman)
 
-# Dependecies
+## Dependecies
 Ruby 2.6 (or higher)
  
 
