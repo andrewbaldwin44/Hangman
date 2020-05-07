@@ -1,23 +1,28 @@
+require_relative "screens"
 require_relative "display"
+require_relative "serialize"
 
 class Gameplay
-  private
-
+  include Screens
   include Display
+  include Serialize
 
   WORD = /[[:alpha:]]/
   SINGLE_LETTER = /^[[:alpha:]]$/
 
   def initialize
+    @screen = :main
     @selected_word = select_word
     @word_completion = ('_' * selected_word.length).chars
     @previous_guesses = []
-    @errors = "\n"
+    @status = "\n"
     @turns = 0
   end
 
-  attr_accessor :word_completion, :guess, :errors
-  attr_reader :selected_word, :previous_guesses
+  private
+
+  attr_accessor :word_completion, :guess, :status
+  attr_reader :screen, :selected_word, :previous_guesses
   attr_writer :turns
 
   def select_word
@@ -33,17 +38,8 @@ class Gameplay
   public
 
   def play
-    hangman_display = hangman
-
     clear_screen
-    welcome
-
-    puts "#{hangman_display[turns]}\n\n"
-    print word_completion.join(" ").center(25)
-
-    puts "\n\n\n#{errors}"
-    puts "Previous guesses: #{previous_guesses.join(" ")}"
-    print "Enter your guess: "
+    main_screen
     get_guess unless end_game?
   end
 
@@ -51,11 +47,13 @@ class Gameplay
 
   def get_guess
     @guess = gets.chomp.strip.downcase
-    @errors = "\n"
 
-    if !guess.match(WORD) || previous_guesses.include?(guess)
-      @errors = invalid_guess
+    if guess.include?(":")
+      command
+    elsif !guess.match(WORD) || previous_guesses.include?(guess)
+      @status = invalid_guess
     else
+      @status = "\n"
       update_game
     end
 

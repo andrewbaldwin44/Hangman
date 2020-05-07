@@ -1,17 +1,10 @@
 module Display
-  def welcome
-    puts <<~HEREDOC
-
-      #{"Welcome to HANGMAN!".blue_highlight.center(60)}
-      #{"-"*50}
-
-      #{"You have #{7-turns} #{turns == 6 ? "try" : "tries"} left to guess the word!".center(50)}
-      Each turn you can either guess a letter or guess the whole word!
-    HEREDOC
-  end
-
   def invalid_guess
     "Please guess a valid letter".red_highlight
+  end
+
+  def invalid_command
+    "Sorry, that command was invalid".red_highlight
   end
 
   def winner
