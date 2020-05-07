@@ -1,7 +1,16 @@
 module Screens
   LINE = "-"*50
+  RETURN = "Hit Enter to return".center(50)
 
-  def welcome
+  def game_commands
+    puts <<~HEREDOC
+      Game commands:  :s - save                 :da - delete all saves
+                      :l - load                 :q - quit
+                      :d - delete save
+    HEREDOC
+  end
+
+  def welcome_header
     puts <<~HEREDOC
 
       #{"Welcome to HANGMAN!".blue_highlight.center(60)}
@@ -10,18 +19,15 @@ module Screens
       #{"You have #{7-turns} #{turns == 6 ? "try" : "tries"} left to guess the word!".center(50)}
       Each turn you can either guess a letter or guess the whole word!
 
-      Game commands:  :s - save                 :da - delete all saves
-                      :l - load                 :x - exit
-                      :d - delete save
-
     HEREDOC
+    game_commands
   end
 
   def main_screen
-    welcome
+    welcome_header
 
-    @hangman_display ||= hangman
-    puts "#{@hangman_display[turns]}\n\n"
+    hangman_display = hangman
+    puts "#{hangman_display[turns]}\n\n"
     print word_completion.join(" ").center(25)
 
     puts "\n\n\n#{status}"
@@ -29,20 +35,40 @@ module Screens
     print "Enter your guess: "
   end
 
-  def load_screen
-    puts <<~HEREDOC
+  def load_header
+    <<~HEREDOC
 
       #{"Saves".yellow_highlight.center(60)}
       #{LINE}
 
       To load a save, please enter the corresponding number
+      #{RETURN}
 
     HEREDOC
+  end
 
-    Dir.glob('saves/*').each_with_index do |filename, index|
-      puts "      #{index+1} - #{filename.split("/")[1].split(".")[0]}"
+  def delete_header
+    <<~HEREDOC
+
+      #{"Delete a Save".red_highlight.center(60)}
+      #{LINE}
+
+      To delete a save, please enter the corresponding number
+      #{RETURN}
+
+    HEREDOC
+  end
+
+  def saves_screen
+    puts "\n\n"
+    unless saves_directory.empty?
+      saves_directory.each_with_index do |filename, index|
+        puts "      #{index+1} - #{clean_filename(filename)}"
+      end
+    else
+      puts "     You don't have any saves yet!"
     end
 
-    puts "\n\n\n#{status}"
+    puts "\n\n#{status}"
   end
 end

@@ -1,17 +1,18 @@
 require_relative "screens"
 require_relative "display"
+require_relative "commands"
 require_relative "serialize"
 
 class Gameplay
   include Screens
   include Display
+  include Commands
   include Serialize
 
   WORD = /[[:alpha:]]/
   SINGLE_LETTER = /^[[:alpha:]]$/
 
   def initialize
-    @screen = :main
     @selected_word = select_word
     @word_completion = ('_' * selected_word.length).chars
     @previous_guesses = []
@@ -21,8 +22,7 @@ class Gameplay
 
   private
 
-  attr_accessor :word_completion, :guess, :status
-  attr_reader :screen, :selected_word, :previous_guesses
+  attr_accessor :selected_word, :previous_guesses, :word_completion, :guess, :status
   attr_writer :turns
 
   def select_word
@@ -45,15 +45,19 @@ class Gameplay
 
   private
 
+  def clear_status
+    self.status = "\n"
+  end
+
   def get_guess
     @guess = gets.chomp.strip.downcase
 
-    if guess.include?(":")
-      command
+    if command?
+      run_command
     elsif !guess.match(WORD) || previous_guesses.include?(guess)
       @status = invalid_guess
     else
-      @status = "\n"
+      clear_status
       update_game
     end
 
